@@ -1,7 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.devtools.ksp' // Fix #14: KSP for Room annotation processing
+    id 'org.jetbrains.kotlin.plugin.compose'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -20,8 +21,16 @@ android {
             useSupportLibrary true
         }
 
-        // Enable multidex for apps with minSdk < 21 (optional for minSdk 24)
         multiDexEnabled true
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("${rootDir}/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
     }
 
     buildTypes {
@@ -29,25 +38,22 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            // Enable R8 full mode for better optimization
-            // Add to gradle.properties: android.enableR8.fullMode=true
         }
         debug {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             shrinkResources false
         }
     }
 
     compileOptions {
-        // Use Java 17 for better performance
-        coreLibraryDesugaringEnabled true // Fix #15: enables Java 8+ APIs on older Android versions
-        sourceCompatibility JavaVersion.VERSION_1_8 // Fix #15: lowered for coreLibraryDesugaring compatibility
-        targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8' // Fix #15: match sourceCompatibility
-        // Enable compose compiler options
+        jvmTarget = '17'
         freeCompilerArgs += [
             '-opt-in=androidx.compose.material3.ExperimentalMaterial3Api',
             '-opt-in=androidx.compose.animation.ExperimentalAnimationApi'
@@ -57,10 +63,6 @@ android {
     buildFeatures {
         compose true
         buildConfig true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.8'
     }
 
     packaging {

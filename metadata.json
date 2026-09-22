@@ -1,0 +1,6 @@
+{
+  "name": "AeroVPN",
+  "description": "Fast, Secure, Private VPN client supporting multiple protocols",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
